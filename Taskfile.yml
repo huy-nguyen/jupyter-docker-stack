@@ -1,0 +1,22 @@
+version: "2"
+vars:
+  DATASCIENCE_VERSION: python-3.7.6
+
+  # Derived:
+  DATASCIENCE_TAG: huy123/datascience-notebook:{{.DATASCIENCE_VERSION}}
+
+tasks:
+  datascience:build:
+    cmds:
+      - >
+        sed
+        's/DATASCIENCE_VERSION/{{.DATASCIENCE_VERSION}}/g'
+        datascience.Dockerfile
+        |
+        docker build
+        -t {{.DATASCIENCE_TAG}}
+        -
+  datascience:push:
+    cmds:
+      - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+      - docker push {{.DATASCIENCE_TAG}}
