@@ -1,0 +1,27 @@
+name: Build and Push Docker Image
+on:
+  push:
+    paths:
+      - .github/workflows/**
+      - datascience.Dockerfile
+      - Taskfile.yml
+
+jobs:
+  build_push_datascience:
+    name: Build and Push
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install go-task
+        uses: Arduino/actions/setup-taskfile@master
+        with:
+          version: "2.8.0"
+      - name: Build
+        run: task datascience:build
+      - name: Push
+        run: task datascience:push
+        env:
+          DOCKER_USERNAME : ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD : ${{ secrets.DOCKER_PASSWORD }}
+
